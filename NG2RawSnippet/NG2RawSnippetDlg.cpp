@@ -702,7 +702,7 @@ void CNG2RawSnippetDlg::SetFileList()
 		CreateDirectory(temp, NULL);
 	}
 
-	temp.Format(_T("NG 파일 정보 (총 NG 파일수: %d)"), m_nTotalImage);
+	temp.Format(_T("NG 파일 정보 (총 CSV 파일수: %d)"), m_nItems);
 	m_ctlTitle.SetWindowText(temp);
 
 	temp.Format(_T("%d"), m_nTotalImage);
@@ -744,7 +744,7 @@ void CNG2RawSnippetDlg::OnClickList1(NMHDR* pNMHDR, LRESULT* pResult)
 	CString temp = m_ctlList.GetItemText(pnmlv->iItem, 1), temp1, msg;
 	CString ai_result = m_ctlList.GetItemText(pnmlv->iItem, 6);
 
-	if (_ttoi(m_ctlList.GetItemText(pnmlv->iItem, 4)) < 1)
+	if (m_ctlList.GetItemText(pnmlv->iItem, 4).GetLength() < 1)
 	{
 		return;
 	}
@@ -873,18 +873,21 @@ BOOL CNG2RawSnippetDlg::PreTranslateMessage(MSG* pMsg)
 {
 	CWnd* pWnd = GetFocus();
 
-	if (pWnd->m_hWnd == m_ctlNGItem.m_hWnd)
+	if (pWnd)
 	{
-		if (pMsg->message == WM_KEYUP)
+		if (pWnd->m_hWnd == m_ctlNGItem.m_hWnd)
 		{
-			if ((pMsg->wParam == VK_UP) || (pMsg->wParam == VK_DOWN))
+			if (pMsg->message == WM_KEYUP)
 			{
-				POSITION pos = m_ctlNGItem.GetFirstSelectedItemPosition();
-				int index = m_ctlNGItem.GetNextSelectedItem(pos);
+				if ((pMsg->wParam == VK_UP) || (pMsg->wParam == VK_DOWN))
+				{
+					POSITION pos = m_ctlNGItem.GetFirstSelectedItemPosition();
+					int index = m_ctlNGItem.GetNextSelectedItem(pos);
 
-				ShowImage(index);
+					ShowImage(index);
 
-				return FALSE;
+					return FALSE;
+				}
 			}
 		}
 	}
